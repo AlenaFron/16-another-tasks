@@ -1,56 +1,54 @@
-/// 1. Объект из предыдущего домашнего задания (со всеми методами)
-const ToDoList = {
-  tasks: [],
+const newTask = {
+  tasks: [
+    {
+      id: 1,
+      name: 'тест',
+      description: 'описание',
+      order: 0
+    }
+  ],
 
-  add(title, priority) {
+  // 1. Метод добавления (учитываем name, description и order)
+  add(name, description, order) {
     const id = this.tasks.length ? this.tasks[this.tasks.length - 1].id + 1 : 1;
-    this.tasks.push({ title, id, priority });
+    this.tasks.push({ id, name, description, order });
   },
 
+  // 2. Метод удаления
   remove(id) {
     this.tasks = this.tasks.filter(task => task.id !== id);
   },
 
+  // 3. Метод обновления (учитываем новые поля)
   update(id, updates) {
     const task = this.tasks.find(task => task.id === id);
     if (task) {
-      if (updates.title) task.title = updates.title;
-      if (updates.priority) task.priority = updates.priority;
+      if (updates.name) task.name = updates.name;
+      if (updates.description) task.description = updates.description;
+      if (updates.order !== undefined) task.order = updates.order;
     }
   },
 
-  sortByPriority() {
-    this.tasks.sort((a, b) => a.priority - b.priority);
+  // 4. Сортировка по полю order
+  sortByOrder() {
+    this.tasks.sort((a, b) => a.order - b.order);
   }
 };
 
-// 2. Новый объект newTask (согласно текущему заданию)
-const newTask = {
-    tasks: [{ 
-        id: 1, 
-        name: 'тест', 
-        description: 'описание',
-        order: 0
-    }]
-};
+// --- ПОСЛЕДОВАТЕЛЬНОЕ ПРИМЕНЕНИЕ ВСЕХ МЕТОДОВ ---
 
-// 3. ПОСЛЕДОВАТЕЛЬНОЕ ПРИМЕНЕНИЕ МЕТОДОВ к newTask
-console.log('--- Применение методов к newTask ---');
+// 1. Добавляем новую задачу
+newTask.add('Сходить в спортзал', 'Тренировка ног', 2);
+newTask.add('Почитать книгу', 'Прочитать 20 страниц', 1);
 
-// Используем метод add: передаем name как title и order как priority
-newTask.tasks.forEach(task => {
-    ToDoList.add(task.name, task.order);
-});
-console.log('После добавления:', ToDoList.tasks);
+// 2. Обновляем первую задачу (тестовую)
+newTask.update(1, { name: 'Исправленный тест', order: 5 });
 
-// Используем метод update: обновим название первой задачи из newTask
-ToDoList.update(1, { title: 'Обновленный тест' });
-console.log('После обновления (ID 1):', ToDoList.tasks);
+// 3. Удаляем одну из задач (например, с id: 2)
+newTask.remove(2);
 
-// Используем метод sortByPriority
-ToDoList.sortByPriority();
-console.log('После сортировки:', ToDoList.tasks);
+// 4. Сортируем оставшиеся задачи по порядку (order)
+newTask.sortByOrder();
 
-// Используем метод remove: удаляем задачу, которую добавили
-ToDoList.remove(1);
-console.log('После удаления (ID 1):', ToDoList.tasks);
+// Вывод результата
+console.log(newTask.tasks);
