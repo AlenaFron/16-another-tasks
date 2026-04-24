@@ -1,59 +1,47 @@
-// 1. Объект из предыдущего ДЗ (исходный «движок» с методами)
-const ToDoList = {
-    // Добавить задачу
-    add(title, priority) {
-        const id = this.tasks.length ? this.tasks[this.tasks.length - 1].id + 1 : 1;
-        this.tasks.push({ title, id, priority });
-    },
+/**
+ * Основная функция калькулятора
+ * @param {string} operation - символ математической операции
+ */
+function calculate(operation) {
+    // 1. Получаем элементы из DOM
+    const num1Element = document.getElementById('num1');
+    const num2Element = document.getElementById('num2');
+    const resultElement = document.getElementById('result');
 
-    // Удалить задачу по id
-    remove(id) {
-        this.tasks = this.tasks.filter(task => task.id !== id);
-    },
+    // 2. Получаем значения и преобразуем их в числа
+    const n1 = parseFloat(num1Element.value);
+    const n2 = parseFloat(num2Element.value);
 
-    // Обновить имя или приоритет по id
-    update(id, updates) {
-        const task = this.tasks.find(task => task.id === id);
-        if (task) {
-            if (updates.title) task.title = updates.title;
-            if (updates.priority) task.priority = updates.priority;
-        }
-    },
-
-    // Отсортировать по приоритету
-    sortByPriority() {
-        this.tasks.sort((a, b) => a.priority - b.priority);
+    // 3. Проверка: введены ли числа
+    if (isNaN(n1) || isNaN(n2)) {
+        resultElement.textContent = 'Ошибка (введите числа)';
+        return;
     }
-};
 
-// 2. Новый объект newTask (только данные)
-const newTask = {
-    tasks: [{ 
-        id: 1, 
-        title: 'тест', 
-        description: 'описание',
-        priority: 0
-    }]
-};
+    // 4. Логика математических операций
+    let result;
+    switch (operation) {
+        case '+':
+            result = n1 + n2;
+            break;
+        case '-':
+            result = n1 - n2;
+            break;
+        case '*':
+            result = n1 * n2;
+            break;
+        case '/':
+            // Проверка деления на ноль
+            if (n2 === 0) {
+                result = 'На 0 делить нельзя';
+            } else {
+                result = n1 / n2;
+            }
+            break;
+        default:
+            result = 'Неизвестная операция';
+    }
 
-// 3. ПОСЛЕДОВАТЕЛЬНОЕ ПРИМЕНЕНИЕ ВСЕХ МЕТОДОВ К newTask
-// Используем .call(), чтобы методы ToDoList работали с массивом внутри newTask
-
-// [Метод ADD]: Добавляем новую задачу
-ToDoList.add.call(newTask, 'Купить продукты', 2);
-
-// [Метод ADD]: Добавляем еще одну задачу для наглядности сортировки
-ToDoList.add.call(newTask, 'Помыть машину', 1);
-
-// [Метод UPDATE]: Обновляем первую задачу (id: 1)
-ToDoList.update.call(newTask, 1, { title: 'Обновленный тест', priority: 5 });
-
-// [Метод SORT]: Сортируем задачи по приоритету
-ToDoList.sortByPriority.call(newTask);
-
-// [Метод REMOVE]: Удаляем задачу с id: 2
-ToDoList.remove.call(newTask, 2);
-
-// Итоговый результат
-console.log('Результат применения всех методов к newTask:');
-console.log(newTask.tasks);
+    // 5. Вывод результата на страницу
+    resultElement.textContent = result;
+}
